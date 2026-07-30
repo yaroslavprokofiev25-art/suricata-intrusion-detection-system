@@ -1,0 +1,43 @@
+# Вирізка з /var/log/suricata/fast.log
+# Показує реальні спрацювання локальних правил під час тестових сценаріїв.
+# Повний журнал містить десятки тисяч записів (особливо під час Nmap-
+# сканування та HTTP-навантаження) — тут наведено репрезентативну вибірку.
+
+# --- Сценарій 1: ICMP-запит (ping з Kali Linux) ---
+06/07/2026-14:39:01.344603  [**] [1:1000001:1] TEST ICMP rule [**] [Classification: (null)] [Priority: 3] {ICMP} 192.168.0.188:0 -> 192.168.0.209:0
+06/07/2026-14:39:01.344651  [**] [1:1000001:1] TEST ICMP rule [**] [Classification: (null)] [Priority: 3] {ICMP} 192.168.0.209:0 -> 192.168.0.188:0
+06/07/2026-14:41:26.639457  [**] [1:1000001:1] TEST ICMP rule [**] [Classification: (null)] [Priority: 3] {ICMP} 192.168.0.188:0 -> 192.168.0.209:0
+06/07/2026-14:41:26.639539  [**] [1:1000001:1] TEST ICMP rule [**] [Classification: (null)] [Priority: 3] {ICMP} 192.168.0.209:0 -> 192.168.0.188:0
+
+# --- Сценарій 2: сканування портів (nmap -sS -Pn -T4) ---
+06/07/2026-14:56:30.448949  [**] [1:1000002:1] TEST TCP scan traffic [**] [Classification: (null)] [Priority: 3] {TCP} 192.168.0.188:58060 -> 192.168.0.209:443
+06/07/2026-14:56:30.454395  [**] [1:1000002:1] TEST TCP scan traffic [**] [Classification: (null)] [Priority: 3] {TCP} 192.168.0.188:34258 -> 192.168.0.209:80
+06/07/2026-14:56:38.636933  [**] [1:1000002:1] TEST TCP scan traffic [**] [Classification: (null)] [Priority: 3] {TCP} 192.168.0.188:34812 -> 192.168.0.209:80
+06/07/2026-14:56:52.722922  [**] [1:1000002:1] TEST TCP scan traffic [**] [Classification: (null)] [Priority: 3] {TCP} 192.168.0.188:46540 -> 192.168.0.209:443
+06/07/2026-14:56:52.739344  [**] [1:1000002:1] TEST TCP scan traffic [**] [Classification: (null)] [Priority: 3] {TCP} 192.168.0.188:55366 -> 192.168.0.209:443
+
+# --- Сценарій 3: спроба SSH-підключення ---
+06/08/2026-20:44:47.303714  [**] [1:1000003:1] TEST SSH connection attempt [**] [Classification: (null)] [Priority: 3] {TCP} 192.168.0.188:3552 -> 192.168.0.209:22
+
+# --- Сценарій 4: SQL-injection запит до OWASP Juice Shop ---
+06/10/2026-10:31:26.922523  [**] [1:1000004:1] TEST HTTP traffic to Juice Shop [**] [Classification: (null)] [Priority: 3] {TCP} 192.168.0.188:2153 -> 192.168.0.209:3000
+06/10/2026-10:31:26.946563  [**] [1:1000011:1] TEST SQL keyword UNION in HTTP URI [**] [Classification: (null)] [Priority: 3] {TCP} 192.168.0.188:2153 -> 192.168.0.209:3000
+06/10/2026-10:31:26.946563  [**] [1:1000012:1] TEST SQL keyword SELECT in HTTP URI [**] [Classification: (null)] [Priority: 3] {TCP} 192.168.0.188:2153 -> 192.168.0.209:3000
+
+# --- Сценарій 5: імітація brute force (багаторазові login-запити) ---
+06/10/2026-10:36:04.223796  [**] [1:1000015:1] TEST Juice Shop login attempt [**] [Classification: (null)] [Priority: 3] {TCP} 192.168.0.188:9680 -> 192.168.0.209:3000
+06/10/2026-10:36:04.248994  [**] [1:1000015:1] TEST Juice Shop login attempt [**] [Classification: (null)] [Priority: 3] {TCP} 192.168.0.188:9681 -> 192.168.0.209:3000
+06/10/2026-10:36:04.256205  [**] [1:1000002:1] TEST TCP scan traffic [**] [Classification: (null)] [Priority: 3] {TCP} 192.168.0.188:9682 -> 192.168.0.209:3000
+06/10/2026-10:36:04.256205  [**] [1:1000004:1] TEST HTTP traffic to Juice Shop [**] [Classification: (null)] [Priority: 3] {TCP} 192.168.0.188:9682 -> 192.168.0.209:3000
+06/10/2026-10:36:04.273695  [**] [1:1000015:1] TEST Juice Shop login attempt [**] [Classification: (null)] [Priority: 3] {TCP} 192.168.0.188:9683 -> 192.168.0.209:3000
+06/10/2026-10:36:04.281118  [**] [1:1000002:1] TEST TCP scan traffic [**] [Classification: (null)] [Priority: 3] {TCP} 192.168.0.188:9683 -> 192.168.0.209:3000
+06/10/2026-10:36:04.281118  [**] [1:1000004:1] TEST HTTP traffic to Juice Shop [**] [Classification: (null)] [Priority: 3] {TCP} 192.168.0.188:9683 -> 192.168.0.209:3000
+06/10/2026-10:36:04.299132  [**] [1:1000015:1] TEST Juice Shop login attempt [**] [Classification: (null)] [Priority: 3] {TCP} 192.168.0.188:9683 -> 192.168.0.209:3000
+06/10/2026-10:36:04.306511  [**] [1:1000002:1] TEST TCP scan traffic [**] [Classification: (null)] [Priority: 3] {TCP} 192.168.0.188:9684 -> 192.168.0.209:3000
+06/10/2026-10:36:04.306511  [**] [1:1000004:1] TEST HTTP traffic to Juice Shop [**] [Classification: (null)] [Priority: 3] {TCP} 192.168.0.188:9684 -> 192.168.0.209:3000
+06/10/2026-10:36:04.329113  [**] [1:1000015:1] TEST Juice Shop login attempt [**] [Classification: (null)] [Priority: 3] {TCP} 192.168.0.188:9684 -> 192.168.0.209:3000
+
+# Примітка: повторення TEST TCP scan traffic / TEST HTTP traffic to Juice Shop
+# поруч із TEST Juice Shop login attempt демонструє критерій "надмірні
+# сповіщення" — широкі правила (any any -> ціль:порт) спрацьовують
+# одночасно з більш специфічними сигнатурами на той самий пакет.
